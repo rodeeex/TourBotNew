@@ -1,12 +1,9 @@
 import asyncio
 import re
 
-import selenium
-from bs4 import BeautifulSoup
-import requests
 from selenium import webdriver
-from datetime import datetime
-from aiogram import Bot, Dispatcher, types, F, filters
+
+from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command, Text
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
@@ -22,9 +19,9 @@ driver = webdriver.Chrome(service=s)
 
 
 class Storage:
-
     countries = dict()
     hotels = dict()
+
     @classmethod
     async def set_aviable_countries(self, countries):
         self.countries = countries
@@ -58,8 +55,8 @@ class User:
 
 
 class BookHotel(StatesGroup):
-    unnamed = State()  # Стартовое состояние
-    standart = State()  # Состояние, когда пользователь представился либо бот назвал его по first name в телеграме
+    unnamed = State()
+    standart = State()
     editing_info = State()
     editing_first_name = State()
     editing_last_name = State()
@@ -70,14 +67,11 @@ class BookHotel(StatesGroup):
     choosing_town = State()
     choosing_hotel = State()
     choosing_suggestion = State()
-    # Когда пользователь выберет понравившееся предложение, бронь добавится в список, а состояние юзера перейдёт в named
-    # Также в любой момент состояние можно переключить на шаг назад
 
 
-main_user = User('', '', '', '')  # Создание экземпляра текущего пользователя
+main_user = User('', '', '', '')
 
 
-# Хэндлер на команду /start (окно приветствия)
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message, state: FSMContext):
     # Обнуление данных пользователя
@@ -307,7 +301,6 @@ async def choose_hotel(callback: types.CallbackQuery):
                            reply_markup=keyboard)
 
 
-# Запуск процесса поллинга новых апдейтов
 async def main():
     await dp.start_polling(bot)
 
